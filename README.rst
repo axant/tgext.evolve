@@ -39,6 +39,9 @@ or you can use ``tgext.pluggable`` when available::
         # ... Your evolutions ...
     ])
 
+tgext.evolve can then be disabled using the ``tgext.evolve.enabled = false``
+option in your configuration files. This is often the case during test suites.
+
 Using Evolutions
 ----------------
 
@@ -81,6 +84,11 @@ instance of it instead of registering the class.
 
 ChangeLog
 ---------
+
+0.0.2
+~~~~~
+
+* Allow disabling tgext.evolve using ``tgext.evolve.enabled = False`` in *.ini files.
 
 0.0.1
 ~~~~~

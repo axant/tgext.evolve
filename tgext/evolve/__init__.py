@@ -38,6 +38,12 @@ class _SetupExtension(object):
 
     def on_app_configured(self, app):
         config = app.config
+
+        enabled = config.get('tgext.evolve.enabled', 'True').lower() == 'true'
+        log.info('tgext.evolve enabled: %s', enabled)
+        if not enabled:
+            return
+
         model = config['package'].model
 
         if config.get('use_sqlalchemy', False):
@@ -67,8 +73,8 @@ class _MaintenanceApplicationWrapper(ApplicationWrapper):
             return self.next_handler(controller, environ, context)
 
         if self._should_check:
-            evolver = context.config['tgext.evolve._evolver']
-            if not evolver.is_locked():
+            evolver = context.config.get('tgext.evolve._evolver', None)
+            if evolver is None or not evolver.is_locked():
                 self._should_check = False
                 return self.next_handler(controller, environ, context)
 

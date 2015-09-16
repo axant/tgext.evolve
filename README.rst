@@ -85,6 +85,11 @@ instance of it instead of registering the class.
 ChangeLog
 ---------
 
+0.0.3
+~~~~~
+
+* Experimental support for SQLAlchemy, tested on SQLite and MySQL.
+
 0.0.2
 ~~~~~
 

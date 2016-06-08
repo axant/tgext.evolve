@@ -93,7 +93,7 @@ ChangeLog
 0.0.2
 ~~~~~
 
-* Allow disabling tgext.evolve using ``tgext.evolve.enabled = False`` in *.ini files.
+* Allow disabling tgext.evolve using ``tgext.evolve.enabled = False`` in `.ini` files.
 
 0.0.1
 ~~~~~

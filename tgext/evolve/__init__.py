@@ -1,6 +1,6 @@
 from tg.configuration import milestones
 from tg.appwrappers.base import ApplicationWrapper
-from evolver import Evolution
+from .evolver import Evolution
 from webob.exc import HTTPServiceUnavailable
 from threading import Thread
 

@@ -85,6 +85,11 @@ instance of it instead of registering the class.
 ChangeLog
 ---------
 
+0.0.4
+~~~~~
+
+* small Python3 compatibility fixes
+
 0.0.3
 ~~~~~
 

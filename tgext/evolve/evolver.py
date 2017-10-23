@@ -15,7 +15,7 @@ class Evolver(object):
             if isinstance(evo, Evolution):
                 return evo
             return evo()
-        self._evolutions = map(_alloc, evolutions)
+        self._evolutions = list(map(_alloc, evolutions))
 
     @abstractmethod
     def try_lock(self):

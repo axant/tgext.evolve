@@ -21,14 +21,15 @@ class MingEvolver(Evolver):
         from pymongo.errors import DuplicateKeyError
 
         col = self._col
-        col.ensure_index('type', background=False, unique=True)
+        col.create_index('type', background=False, unique=True)
 
         pid = os.getpid()
         try:
-            distlock = col.find_and_modify({'type': 'lock', 'process': None},
-                                           update={'type': 'lock', 'process': pid},
-                                           new=True,
-                                           upsert=True)
+            col.find_one_and_update(
+                {'type': 'lock', 'process': None},
+                {'$set': {'type': 'lock', 'process': pid}},
+                upsert=True,
+            )
             log.info('last lock was correctely released')
             return True
         except DuplicateKeyError:
@@ -39,14 +40,17 @@ class MingEvolver(Evolver):
                 return False  # the process is still running
             except OSError:
                 log.warning('last lock was not released correctely!')
-                col.find_and_modify({'type': 'lock', 'process': lock['process']},
-                                    update={'type': 'lock', 'process': pid})
+                col.find_one_and_update(
+                    {'type': 'lock', 'process': lock['process']},
+                    {'$set': {'type': 'lock', 'process': pid}}
+                )
                 return True
 
     def unlock(self):
-        self._col.find_and_modify({'type': 'lock', 'process': os.getpid()},
-                                  update={'type': 'lock', 'process': None},
-                                  new=True)
+        self._col.find_one_and_update(
+            {'type': 'lock', 'process': os.getpid()},
+            {'$set': {'type': 'lock', 'process': None}},
+        )
 
     def is_locked(self):
         lock = self._col.find_one({'type': 'lock'})

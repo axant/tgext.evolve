@@ -16,6 +16,8 @@ class MingEvolver(Evolver):
         return self._get_session().db.tgext_evolve
 
     def try_lock(self):
+        """returns False if the lock is already set
+           returns True if a new lock is created and has the same pid"""
         from pymongo.errors import DuplicateKeyError
 
         col = self._col
@@ -27,10 +29,19 @@ class MingEvolver(Evolver):
                                            update={'type': 'lock', 'process': pid},
                                            new=True,
                                            upsert=True)
+            log.info('last lock was correctely released')
+            return True
         except DuplicateKeyError:
-            return False
-        else:
-            return distlock['process'] == pid
+            lock = col.find_one({'type': 'lock'})
+            try:
+                os.kill(lock['process'], 0)
+                log.info('the running process %s holds the lock' % lock['process'])
+                return False  # the process is still running
+            except OSError:
+                log.warning('last lock was not released correctely!')
+                col.find_and_modify({'type': 'lock', 'process': lock['process']},
+                                    update={'type': 'lock', 'process': pid})
+                return True
 
     def unlock(self):
         self._col.find_and_modify({'type': 'lock', 'process': os.getpid()},

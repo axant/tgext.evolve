@@ -3,6 +3,7 @@
 import os
 import logging
 from .evolver import Evolver
+from pymongo.collection import ReturnDocument
 
 log = logging.getLogger('tgext.evolve')
 
@@ -23,10 +24,11 @@ class MingEvolver(Evolver):
 
         pid = os.getpid()
         try:
-            col.find_one_and_update(
+            distlock = col.find_one_and_update(
                 {'type': 'lock', 'process': None},
                 {'$set': {'type': 'lock', 'process': pid}},
                 upsert=True,
+                return_document=ReturnDocument.AFTER,
             )
         except DuplicateKeyError:
             return False

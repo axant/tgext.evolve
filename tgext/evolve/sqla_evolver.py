@@ -28,7 +28,8 @@ class SQLAEvolver(Evolver):
             'tgext_evolve',
             self._metadata,
             Column('type', String(16), primary_key=True),
-            Column('value', String(255), nullable=False)
+            Column('value', String(255), nullable=False),
+            extend_existing=True,
         )
         if not t.exists():
             t.create()

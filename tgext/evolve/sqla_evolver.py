@@ -20,17 +20,18 @@ class SQLAEvolver(Evolver):
 
     @cached_property
     def _metadata(self):
-        return MetaData(bind=self._engine)
+        metadata = MetaData(bind=self._engine)
+        t = Table(
+            'tgext_evolve',
+            metadata,
+            Column('type', String(16), primary_key=True),
+            Column('value', String(255), nullable=False),
+        )
+        return metadata, t
 
     @cached_property
     def _table(self):
-        t = Table(
-            'tgext_evolve',
-            self._metadata,
-            Column('type', String(16), primary_key=True),
-            Column('value', String(255), nullable=False),
-            extend_existing=True,
-        )
+        metadata, t = self._metadata
         if not t.exists():
             t.create()
         return t

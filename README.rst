@@ -85,6 +85,11 @@ instance of it instead of registering the class.
 ChangeLog
 ---------
 
+0.0.5
+~~~~~
+
+* small bugfix and deprecation gardening
+
 0.0.4
 ~~~~~
 
